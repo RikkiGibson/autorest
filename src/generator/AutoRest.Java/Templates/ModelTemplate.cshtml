@@ -143,4 +143,37 @@ else
 @EmptyLine
 }
 }
+
+    @@Override
+    public int hashCode() {
+        int hashCode = 17;
+@foreach (PropertyJv property in Model.Properties)
+{
+switch (property.ModelType.Name)
+{
+case "boolean":
+@:        hashCode = hashCode * 37 + (@property.Name ? 1231 : 1237);
+break;
+case "byte":
+case "char":
+case "short":
+case "int":
+@:        hashCode = hashCode * 37 + ((int)@property.Name);
+break;
+case "long":
+@:        hashCode = hashCode * 37 + ((int)@property.Name ^ (@property.Name >>> 32));
+break;
+case "double":
+@:        hashCode = hashCode * 37 + ((int)Double.doubleToLongBits(@property.Name) ^ (Double.doubleToLongBits(@property.Name) >>> 32));
+break;
+default:
+@:        if (@property.Name != null) {
+@:            hashCode = hashCode * 37 + @(property.Name).hashCode();
+@:        }
+break;
+}
+}
+        return hashCode;
+    }
+    @EmptyLine
 }
